@@ -1,158 +1,72 @@
-// Write your code on this file. Please don't change the existing code
-// unless absolutely needed.
+//JS code for ToDO App
 
-//Initial price of the burger
-var wholeWheatBun = 10;
+var listOfActivities = [];
 
-//Ingredients of the burger along with the price
-// Clue: the name is same as the textcontent of the button. Will be useful later on :)
-var ingredients = {
-  Patty: 80,
-  Cheese: 10,
-  Tomatoes: 20,
-  Onions: 20,
-  Lettuce: 20
-};
+// Create an array named list to store our to-do activities
 
-//Current state of the ingredients in the burger
-var state = {
-  Patty: true,
-  Cheese: true,
-  Tomatoes: true,
-  Onions: true,
-  Lettuce: true
-};
+var input = document.getElementById("input");
 
-// This function renders the entire screen everytime the state changes accordingly
-function renderAll() {
-  renderPatty();
-  renderCheese();
-  renderTomatoes();
-  renderOnions();
-  renderLettuce();
-  renderButtons();
-  renderIngredientsBoard();
-  renderPrice();
+// Create a DOM variable  named input to get the to-do activities added from HTML form
+
+var todolist = document.getElementById("todolist");
+
+//Create a DOM variable todolist ul tag (unordered list)
+
+document.getElementById("button").onclick = click;
+
+//Using onlclick to run the click function when button is clicked.
+
+// Adding a to-do activity
+
+function click() {
+  // function -> click()
+
+  listOfActivities.push(input.value);
+  console.log(listOfActivities);
+  //Using push array operation to add the input todo activity to the list created earlier.
+  input.value = "";
+  // Giving Empty string to input value after pushing it to array
+  showList();
+  // Calling a function showList() to display the todo activities present in the list after addding new element
 }
 
-function renderPatty() {
-  let patty = document.querySelector("#patty");
-  //you can also use getElementById
-  if (state.Patty) {
-    patty.style.display = "inherit";
-  } else {
-    patty.style.display = "none";
-  }
+// function -> showList()
+
+function showList() {
+  //Using innerHTML DOM property to set HTML , giving empty string initially
+
+  todolist.innerHTML = " ";
+
+  //To display each to-do activity from the list using innerHTML property.
+
+  listOfActivities.forEach(function (n, i) {
+    todolist.innerHTML +=
+      "<li>" +
+      n +
+      "<a onclick='editItem(" +
+      i +
+      ")'>Edit</a>" +
+      "<a onclick='deleteItem(" +
+      i +
+      ")'>&times | </a></li>";
+  });
 }
 
-function renderCheese() {
-  //Trial 1 - Change the visibility of cheese based on state by manipulating the DOM
-  let cheese = document.querySelector("#cheese");
-  if (state.Cheese) {
-    cheese.style.display = "inherit";
-  } else {
-    cheese.style.display = "none";
-  }
+//Deleting an activity
+function deleteItem(i) {
+  // Using splice array operations to remove one item at specified index
+  listOfActivities.splice(i, 1);
+  // Display the todo list
+  showList();
 }
 
-function renderTomatoes() {
-  //Trial 1 - Change the visibility of Tomatoes based on state by manipulating the DOM
-  let tomatoes = document.querySelector("#tomato");
-  if (state.Tomatoes) {
-    tomatoes.style.display = "inherit";
-  } else {
-    tomatoes.style.display = "none";
-  }
+//Editing an activity
+
+function editItem(i) {
+  //Using prompt to get the new value of the activty after editing
+  var newValue = prompt("Please insert your new value");
+  // Using splice array operation to remove the previous activity and add the new activity
+  listOfActivities.splice(i, 1, newValue);
+  //Display the list
+  showList();
 }
-
-function renderOnions() {
-  //Trial 1 - Change the visibility of Onions based on state by manipulating the DOM
-  let onions = document.querySelector("#onion");
-  if (state.Onions) {
-    onions.style.display = "inherit";
-  } else {
-    onions.style.display = "none";
-  }
-}
-
-function renderLettuce() {
-  //Trial 1 - Change the visibility of Lettuce based on state by manipulating the DOM
-  let lettuce = document.querySelector("#lettuce");
-  if (state.Lettuce) {
-    lettuce.style.display = "inherit";
-  } else {
-    lettuce.style.display = "none";
-  }
-}
-
-document.querySelector(".btn-patty").onclick = function () {
-  state.Patty = !state.Patty;
-  renderAll();
-};
-
-// Trial 2 - Setup event listener for the cheese button
-document.querySelector(".btn-cheese").onclick = function () {
-  state.Cheese = !state.Cheese;
-  renderAll();
-};
-
-// Trial 2 - Setup event listener for the tomatoes button
-document.querySelector(".btn-tomatoes").onclick = function () {
-  state.Tomatoes = !state.Tomatoes;
-  renderAll();
-};
-
-// Trial 2 - Setup event listener for the onion button
-document.querySelector(".btn-onions").onclick = function () {
-  state.Onions = !state.Onions;
-  renderAll();
-};
-
-// Trial 2 - Setup event listener for the lettuce button
-document.querySelector(".btn-lettuce").onclick = function () {
-  state.Lettuce = !state.Lettuce;
-  renderAll();
-};
-
-//Challenge 1 - Add/Remove the class active to the buttons based on state
-function renderButtons() {
-  for (let ingredient in state) {
-    let button = document.querySelector(".btn-" + ingredient.toLowerCase());
-    if (state[ingredient]) {
-      button.classList.add("active");
-    } else {
-      button.classList.remove("active");
-    }
-  }
-}
-renderButtons()
-
-//Challenge 2 - Render only the items selected in the ingredients board based on the state
-function renderIngredientsBoard() {
-  let items = document.querySelectorAll(".items");
-  for (let i = 0; i < items.length; i++) {
-    let ingredient = items[i].textContent;
-    if (state[ingredient]) {
-      items[i].style.display = "block";
-    } else {
-      items[i].style.display = "none";
-    }
-  }
-}
-renderIngredientsBoard()
-
-
-//Judgement 1
-//In the p element having price-details as the class, display the calculated
-//price based on ingredients
-function renderPrice() {
-  let totalPrice = wholeWheatBun;
-  for (let ingredient in state) {
-    if (state[ingredient]) {
-      totalPrice += ingredients[ingredient];
-    }
-  }
-  let priceDetails = document.querySelector(".price-details");
-  priceDetails.textContent = "INR " + totalPrice;
-}
-renderPrice()
